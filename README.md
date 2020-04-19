@@ -32,6 +32,43 @@ In this case, the topic name I have choosen is "com.udacity.dep.police.service",
 ```
 kafka-console-consumer --topic "com.udacity.dep.police.service" --from-beginning --bootstrap-server localhost:9092
 ```
+The following Output is expected:
+![Kafka Consumer Output](screenshot/consumer_output.jpg "Kafka Consumer Output")
+Kafka Consumer Output
+
+5) To run the Spark Codes
+```
+spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.4 --master local[*] data_stream.py
+```
+The following Progress Report is expected:
+
+![Progress Report](screenshot/progress_output.jpg "Progress Report")
+
+Progress Report
+
+The following sample Aggregated Output is expected:
+
+![Aggregated Output](screenshot/progress_output.jpg "Aggregated Output")
+
+Aggregated Output
 
 
 
+## Additional Questions
+
+
+1) How did changing values on the SparkSession property parameters affect the throughput and latency of the data?
+
+`processedRowsPerSecond` could be tweak to give higher throughput. Higher Throughput could be achieved by increasing the value being cofigure in this property parameters. 
+
+2) What were the 2-3 most efficient SparkSession property key/value pairs? Through testing multiple variations on values, how can you tell these were the most optimal?
+
+The most efficient Property key/value pairs are:
+
+<ul>
+  <li>spark.default.parallelism</li>
+  <li>spark.streaming.kafka.maxRatePerPartition</li>
+  <li>spark.sql.shuffle.partitions</li>
+</ul> 
+
+These properties setting could be used to maximise `processedRowsPerSecond`, increasing the number of rows that could be processed by the machine. However, this depends on the machine's properties, ie the number cores the machines has, the type of clusters being used etc.
