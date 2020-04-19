@@ -5,9 +5,6 @@ from pyspark.sql.types import *
 import pyspark.sql.functions as psf
 import time
 
-
-
-
 KAFKA_SERVER_URL = 'localhost:9092'
 TOPIC_NAME = 'com.udacity.dep.police.service'
 
@@ -65,19 +62,14 @@ def run_spark_job(spark):
         psf.col("disposition")
     )
     # count the number of original crime type
-    agg_df =  distinct_table \
-        .select(
+    agg_df =  distinct_table.select(
         distinct_table.call_date_time,
         distinct_table.original_crime_type_name,
         distinct_table.disposition
-    ) \
-        .withWatermark("call_date_time", "60 minutes") \
-        .groupBy(
+    ).withWatermark("call_date_time", "60 minutes").groupBy(
         psf.window(distinct_table.call_date_time, "10 minutes", "5 minutes"),
-        psf.col("original_crime_type_name")
-        #                     distinct_table.disposition
-    ) \
-        .count()
+        psf.col("original_crime_type_name") 
+    ).count()
 
     # TODO Q1. Submit a screen shot of a batch ingestion of the aggregation
     # TODO write output stream
